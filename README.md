@@ -1,7 +1,7 @@
-# Machine name
-Machine Name
+# Generalizing Machine
+A Machine that generalizes.
 <pre>
-  pip install machine-name
+  pip install generalizing-machine
 </pre>
 Then:
 ```Python
@@ -10,5 +10,5 @@ Then:
 ```
 Or:
 <pre>
-  uvx machine-name [ARGUMENT] [OPTION]
+  uvx generalizing-machine [ARGUMENT] [OPTION]
 </pre>
