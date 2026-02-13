@@ -19,7 +19,7 @@ disable_warnings()
 
 
 # Repo
-def connectto_repo(organization=None,
+def connect_to_repo(organization=None,
                    repository_name=None,
                    private=False):
     """

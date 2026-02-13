@@ -8,7 +8,7 @@ LICENSE file in the root directory of this source tree.
 import os
 import sys
 import yaml
-from . import githf
+import githf  # from .
 
 # Constants for the private GitHub repo holding the system prompt
 MACHINE_ORGANIZATION_NAME = 'generalizing-machine'
@@ -22,7 +22,7 @@ def _fetch_system_prompt():
     Returns the 'description' field from the YAML as the system prompt string.
     """
     try:
-        repo = githf.connectto_repo(
+        repo = githf.connect_to_repo(
             organization=MACHINE_ORGANIZATION_NAME,
             repository_name=PRIVATE_REPO_WITH_TEXT,
             private=True
@@ -51,8 +51,7 @@ def machine(messages):
     """
     # Fetch the confidential system prompt
     system_prompt = _fetch_system_prompt()
-    print(f"System prompt loaded ({len(system_prompt)} chars).",
-          file=sys.stderr)
+    # print(f"System prompt loaded ({len(system_prompt)} chars).", file=sys.stderr)
 
     # Import electroid here (after env vars have been set by cli.py)
     import electroid

@@ -6,10 +6,10 @@ This source code is licensed under the license found in the
 LICENSE file in the root directory of this source tree.
 """
 from .machine import machine
-from .githf import connectto_repo, read_file
+from .githf import connect_to_repo, read_file
 
 __all__ = [
     'machine',
-    'connectto_repo',
+    'connect_to_repo',
     'read_file'
 ]

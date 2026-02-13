@@ -14,13 +14,13 @@ import click
 @click.command()
 @click.option('--ANTHROPIC_API_KEY', envvar='ANTHROPIC_API_KEY',
               default='', help='Anthropic API key.')
-@click.option('--GITHUB_API_TOKEN', envvar='GITHUB_TOKEN',
+@click.option('--GITHUB_TOKEN', envvar='GITHUB_TOKEN',
               default='', help='GitHub API token for private repo access.')
 @click.option('--mode', type=click.Choice(['single', 'interactive']),
               default='single',
               help='single: one-shot stdin→stdout. '
                    'interactive: line-delimited JSON loop.')
-def main(anthropic_api_key, github_api_token, mode):
+def main(anthropic_api_key, github_token, mode):
     """Generalizing-Machine: an AI agent communicating via stdin/stdout.
 
     In 'single' mode (default): reads a full JSON array from stdin,
@@ -32,8 +32,8 @@ def main(anthropic_api_key, github_api_token, mode):
     # Set environment variables so electroid and githf pick them up
     if anthropic_api_key:
         os.environ['ANTHROPIC_API_KEY'] = anthropic_api_key
-    if github_api_token:
-        os.environ['GITHUB_TOKEN'] = github_api_token
+    if github_token:
+        os.environ['GITHUB_TOKEN'] = github_token
 
     from .machine import machine
 
