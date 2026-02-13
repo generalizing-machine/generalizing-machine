@@ -166,3 +166,4 @@ cython_debug/
 .gitignore
 .gitignore
 .gitignore
+example.sh

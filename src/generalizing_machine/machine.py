@@ -8,7 +8,7 @@ LICENSE file in the root directory of this source tree.
 import os
 import sys
 import yaml
-import githf  # from .
+from . import githf  # from .
 
 # Constants for the private GitHub repo holding the system prompt
 MACHINE_ORGANIZATION_NAME = 'generalizing-machine'

@@ -68,25 +68,33 @@ def _run_interactive(machine):
     Loops until EOF on stdin.
     """
     print("Generalizing-Machine interactive mode ready.", file=sys.stderr)
-    for line in sys.stdin:
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            messages = json.loads(line)
-        except json.JSONDecodeError as e:
-            print(f"Error: invalid JSON: {e}", file=sys.stderr)
-            continue
+    try:
+        while True:
+            line = sys.stdin.readline()
+            if not line:
+                break
 
-        if not isinstance(messages, list):
-            print("Error: expected a JSON array of messages.",
-                  file=sys.stderr)
-            continue
+            line = line.strip()
+            if not line:
+                continue
 
-        text, thoughts = machine(messages)
-        json.dump([text, thoughts], sys.stdout)
-        sys.stdout.write('\n')
-        sys.stdout.flush()
+            try:
+                messages = json.loads(line)
+            except json.JSONDecodeError as e:
+                print(f"Error: invalid JSON: {e}", file=sys.stderr)
+                continue
+
+            if not isinstance(messages, list):
+                print("Error: expected a JSON array of messages.",
+                      file=sys.stderr)
+                continue
+
+            text, thoughts = machine(messages)
+            json.dump([text, thoughts], sys.stdout)
+            sys.stdout.write('\n')
+            sys.stdout.flush()
+    except KeyboardInterrupt:
+        sys.exit(0)
 
 
 if __name__ == '__main__':
