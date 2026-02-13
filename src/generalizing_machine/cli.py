@@ -16,13 +16,18 @@ import click
               default='', help='Anthropic API key.')
 @click.option('--GITHUB_API_TOKEN', envvar='GITHUB_TOKEN',
               default='', help='GitHub API token for private repo access.')
-def main(anthropic_api_key, github_api_token):
+@click.option('--mode', type=click.Choice(['single', 'interactive']),
+              default='single',
+              help='single: one-shot stdin→stdout. '
+                   'interactive: line-delimited JSON loop.')
+def main(anthropic_api_key, github_api_token, mode):
     """Generalizing-Machine: an AI agent communicating via stdin/stdout.
 
-    Reads a JSON list of messages from stdin,
-    fetches the system prompt from a private GitHub repo,
-    calls Anthropic via the electroid package,
-    and writes a JSON [text, thoughts] array to stdout.
+    In 'single' mode (default): reads a full JSON array from stdin,
+    responds once, and exits.
+
+    In 'interactive' mode: reads one JSON line at a time from stdin,
+    responds with one JSON line on stdout, and loops until EOF.
     """
     # Set environment variables so electroid and githf pick them up
     if anthropic_api_key:
@@ -30,7 +35,16 @@ def main(anthropic_api_key, github_api_token):
     if github_api_token:
         os.environ['GITHUB_TOKEN'] = github_api_token
 
-    # Read messages from stdin
+    from .machine import machine
+
+    if mode == 'interactive':
+        _run_interactive(machine)
+    else:
+        _run_single(machine)
+
+
+def _run_single(machine):
+    """One-shot mode: read full JSON from stdin, respond, exit."""
     try:
         messages = json.load(sys.stdin)
     except json.JSONDecodeError as e:
@@ -42,12 +56,37 @@ def main(anthropic_api_key, github_api_token):
               file=sys.stderr)
         sys.exit(1)
 
-    # Run the machine
-    from .machine import machine
     text, thoughts = machine(messages)
-
-    # Write the result to stdout as a JSON array
     json.dump([text, thoughts], sys.stdout)
+
+
+def _run_interactive(machine):
+    """Interactive mode: line-delimited JSON loop.
+
+    Each line on stdin is a JSON array of messages.
+    Each response is a JSON array [text, thoughts] followed by newline.
+    Loops until EOF on stdin.
+    """
+    print("Generalizing-Machine interactive mode ready.", file=sys.stderr)
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            messages = json.loads(line)
+        except json.JSONDecodeError as e:
+            print(f"Error: invalid JSON: {e}", file=sys.stderr)
+            continue
+
+        if not isinstance(messages, list):
+            print("Error: expected a JSON array of messages.",
+                  file=sys.stderr)
+            continue
+
+        text, thoughts = machine(messages)
+        json.dump([text, thoughts], sys.stdout)
+        sys.stdout.write('\n')
+        sys.stdout.flush()
 
 
 if __name__ == '__main__':
