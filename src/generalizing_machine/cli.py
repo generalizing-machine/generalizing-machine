@@ -69,11 +69,8 @@ def _run_interactive(machine):
     """
     print("Generalizing-Machine interactive mode ready.", file=sys.stderr)
     try:
-        while True:
-            line = sys.stdin.readline()
-            if not line:
-                break
-
+        # Loop blocks until input is available on stdin
+        for line in sys.stdin:
             line = line.strip()
             if not line:
                 continue
