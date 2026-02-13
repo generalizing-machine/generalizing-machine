@@ -6,7 +6,7 @@ A Machine that generalizes.
 Then:
 ```Python
   # Python
-  import machine_name
+  import generalizing_machine
 ```
 Or:
 <pre>
